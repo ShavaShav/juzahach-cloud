@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+/**
+ * Kicks off the user application server and
+ * edge server. 
+ */
+
+require('./api');
+require('./edge');
