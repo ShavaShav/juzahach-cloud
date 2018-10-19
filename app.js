@@ -12,6 +12,9 @@ var app = express();
 
 const PROD = app.get('env') === 'production'; // env determination
 
+// load passport for user authentication
+require('./config/passport');
+
 // Use middleware
 app.use(logger('dev'));
 app.use(bodyParser.json());
