@@ -1,8 +1,26 @@
 var bodyParser   = require('body-parser');
 var createError = require('http-errors');
+var cors = require('cors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+
+// Sets up an express app for production use (SSL and CORS options)
+function useProduction(expressApp) {
+  // force https
+  expressApp.use(function(req, res, next) {
+    var protocol = req.get('x-forwarded-proto');
+    protocol == 'https' ? next() : res.redirect('https://' + req.hostname + req.url);
+  });
+
+  // Configure CORS preflight options
+  expressApp.options('*', cors({
+    origin: true,
+    methods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin'],
+    preflightContinue: false,
+  }));
+}
 
 //===========================================================/
 // USER APPLICATION API
@@ -19,6 +37,9 @@ require('./config/passport');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
+if (PROD) useProduction(app);
 
 // Use routes
 app.use('/', require('./routes'));
@@ -54,6 +75,9 @@ var edgeApp = express();
 edgeApp.use(logger('dev'));
 edgeApp.use(bodyParser.text());
 edgeApp.use(bodyParser.urlencoded({ extended: true }));
+edgeApp.use(cors());
+
+if (PROD) useProduction(edgeApp);
 
 // Use routes
 edgeApp.use('/', require('./edge_routes'));
