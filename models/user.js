@@ -17,7 +17,9 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = function(models) {
-    // associations can be defined here
+    // A user can have many access codes. Delete codes if user deleted
+    User.hasMany(models.AccessCode, {onDelete: 'cascade'});
+
   };
 
   // Calculates and sets salt and hash using PBKDF2, given plaintext password

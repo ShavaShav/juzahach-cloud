@@ -1,7 +1,10 @@
 var router = require('express').Router();
 
-// route endpoints in ./user through /user
+// route endpoints in ./user.js through /user
 router.use('/user', require('./user'));
+
+// route endpoints in ./device.js through /device
+router.use('/device', require('./device'));
 
 // validation error handler for all calls
 router.use(function(err, req, res, next){
