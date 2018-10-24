@@ -73,7 +73,7 @@ var edgeApp = express();
 
 // Use middleware
 edgeApp.use(logger('dev'));
-edgeApp.use(bodyParser.text());
+edgeApp.use(bodyParser.json());
 edgeApp.use(bodyParser.urlencoded({ extended: true }));
 edgeApp.use(cors());
 
@@ -97,7 +97,10 @@ edgeApp.use(function(err, req, res, next) {
 
   // return the error
   res.status(err.status || 500);
-  res.text(res.locals.message);
+  res.json({'errors': {
+    message: res.locals.message,
+    error: res.locals.error
+  }});
 });
 
 module.exports = { app, edgeApp };
