@@ -17,11 +17,12 @@ module.exports = (sequelize, DataTypes) => {
 
   AccessCode.associate = function(models) {
     // Access code belongs to a single user (adds userId field)
-    AccessCode.belongsTo(models.User, { as: 'user' });
+    AccessCode.belongsTo(models.User, {as: 'user', foreignKey: 'userId'});
   };
   
   // Static helper function to retry access code creation on taken/duplicate
   AccessCode.createUnique = function(userId, retries = 5){
+    
     // Create an access token (random string)
     let accessCode = crypto.randomBytes(ACCESS_CODE_LENGTH / 2).toString('hex');
     // Add to database with user id

@@ -3,6 +3,7 @@ var router  = express.Router();
 var models  = require('../models');
 
 router.post('/register', function(req, res, next) {
+
   const accessCode = req.body.device.accessCode;
   const macAddress = req.body.device.macAddress;
 
@@ -37,6 +38,7 @@ router.post('/register', function(req, res, next) {
       });
     });
   }).catch(err => { // catch all
+    console.log(err);
     res.status(500).json({errors: {message: err.message}});
   });
 });
