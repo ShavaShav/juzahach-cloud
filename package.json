@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "api": "node ./bin/api",
     "edge": "node ./bin/edge",
-    "test": "node node_modules/mocha/bin/mocha --exit"
+    "test": "node node_modules/mocha/bin/mocha --exit",
+    "coverage": "node node_modules/nyc/bin/nyc --reporter=html --reporter=text node_modules/mocha/bin/mocha --exit"
   },
   "dependencies": {
     "cors": "^2.8.4",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "sequelize-cli": "^5.1.0",
     "supertest": "^3.3.0"
   }

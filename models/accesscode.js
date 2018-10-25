@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   
   // Static helper function to retry access code creation on taken/duplicate
   AccessCode.createUnique = function(userId, retries = 5){
-    
+
     // Create an access token (random string)
     let accessCode = crypto.randomBytes(ACCESS_CODE_LENGTH / 2).toString('hex');
     // Add to database with user id

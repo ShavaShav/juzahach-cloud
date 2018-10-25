@@ -4,8 +4,7 @@ var should  = require('chai').should();
 var expect  = require('chai').expect;
 var request = require('supertest');
 var { app, edgeApp } = require('../app');
-var models  = require('../models');
-
+var models = require('../models');
 
 const jwtRegex = /[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+/;
 
@@ -16,8 +15,9 @@ const testUser = {
 }
 
 describe('Access Code', () => {
-  // Clear DB before each test
+
   beforeEach(done => {
+    // Clear DB before each test
     models.sequelize.sync({ force: true, match: /_test$/ })
         .then(() => { done() });
   });
@@ -50,7 +50,6 @@ describe('Access Code', () => {
     // Create a test user
     models.User.create(testUser).then(user => {
       user.setPassword(testUser.password); // generate hash/salt
-      token = user.generateJWT();
       return user.save();
     }).then(user => {
       // Add to database with user id
@@ -63,7 +62,6 @@ describe('Access Code', () => {
       request(edgeApp)
       .post('/register')
       .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer ' + token)
       .send({
         device: {
           accessCode: accessCode,
@@ -74,6 +72,7 @@ describe('Access Code', () => {
       .expect(200)
       .end((err, res) => {
         expect(res.body).to.have.property('token');
+        expect(res.body.token).to.match(jwtRegex);
         done();
       });
     });

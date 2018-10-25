@@ -1,0 +1,20 @@
+image: node:8
+
+services:
+  - mysql
+
+before_script:
+  - call npm install
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+
+# Run tests with coverage reporting (gitlab will regex parse)
+Test:
+  script:
+    - call npm run coverage
+  artifacts:
+    paths:
+      - coverage/

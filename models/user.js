@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function(models) {
     // A user can have many access codes. Delete codes if user deleted (1:M)
-    User.hasMany(models.AccessCode, {onDelete: 'cascade'});
+    User.hasMany(models.AccessCode, {onDelete: 'cascade', as: 'user', foreignKey: 'userId'});
 
     // A User can register multiple devices (N:M)
-    User.belongsToMany(models.Device, {through: 'UserDevices', as: 'device'});
+    User.belongsToMany(models.Device, {through: 'UserDevices', as: 'device', foreignKey: 'deviceId'});
   };
 
   // Calculates and sets salt and hash using PBKDF2, given plaintext password
