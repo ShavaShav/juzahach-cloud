@@ -15,4 +15,15 @@ router.post('/register', auth.required, function(req, res, next){
   
 });
 
+//GET /Device
+router.get('/device', function(req, res, next){
+  models.Device.findAll().then(function(deviceList) {
+    if (!deviceList) {
+        return res.status(404).json({errors: {message: "No device found"}}); // No device found
+    }
+    // Return the device
+    return res.json({device: deviceList});
+  }).catch(next);
+});
+
 module.exports = router;
