@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.AccessCode, {onDelete: 'cascade', as: 'user', foreignKey: 'userId'});
 
     // A User can register multiple devices (N:M)
-    User.belongsToMany(models.Device, {through: 'UserDevices', as: 'device', foreignKey: 'deviceId'});
+    User.belongsToMany(models.Device, {through: 'UserDevices', as: 'device', foreignKey: 'userId'});
   };
 
   // Calculates and sets salt and hash using PBKDF2, given plaintext password
