@@ -16,12 +16,26 @@ router.post('/register', auth.required, function(req, res, next){
 
 });
 
-//GET /Device
-router.get('/device', function(req, res, next){
+// GET /device/#
+// Get single device
+// router.get('/:id', auth.required, function(req, res, next) {
+//   const userId = req.user.id;
+//
+//   return Device.findById(req.params.id).then(device=> {
+//     if (!device || device.userId != userId) {
+//       // doesn't exist or doesn't belong to user
+//       return res.status(404).json({error: "Device not found"});
+//     }
+//     // Return device
+//     return res.json(device));
+//   });
+// });
+
+//GET /device
+// Returns all devices for authorized user
+router.get('/', auth.required, function(req, res, next){
+
   models.Device.findAll().then(function(deviceList) {
-    if (!deviceList) {
-        return res.status(404).json({errors: {message: "No device found"}}); // No device found
-    }
     // Return the device
     return res.json({devices: deviceList});
   }).catch(next);
