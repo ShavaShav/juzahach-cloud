@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = (sequalize, DataType) => {
+module.exports = (sequelize, DataType) => {
 	const Location = sequelize.define('Location', {
 		latitude: DataType.DOUBLE,
 		longitude: DataType.DOUBLE,

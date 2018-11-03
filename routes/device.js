@@ -1,5 +1,5 @@
 var router   = require('express').Router();
-var auth     = require('./auth');
+var auth     = require('../auth');
 var models   = require('../models');
 
 // POST /device/register
