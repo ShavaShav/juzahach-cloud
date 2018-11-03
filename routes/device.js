@@ -18,25 +18,45 @@ router.post('/register', auth.required, function(req, res, next){
 
 // GET /device/#
 // Get single device
-// router.get('/:id', auth.required, function(req, res, next) {
-//   const userId = req.user.id;
-//
-//   return Device.findById(req.params.id).then(device=> {
-//     if (!device || device.userId != userId) {
-//       // doesn't exist or doesn't belong to user
-//       return res.status(404).json({error: "Device not found"});
-//     }
-//     // Return device
-//     return res.json(device));
-//   });
-// });
+router.get('/:id', auth.required, function(req, res, next) {
+  const userId = req.user.id;
 
-//GET /device
+  return models.Device.find({
+    where: { id: req.params.id },
+    include: {
+      model: models.User,
+      as: 'user',
+      where: { id: userId },
+      through: { attributes: [] }, // remove UserDevices data
+      attributes: [] // remove User data
+    }
+  }).then(device=> {
+
+    if (!device) {
+      // doesn't exist or doesn't belong to user
+      return res.status(404).json({error: "Device not found"});
+    }
+    // Return device
+    return res.json({device: device});
+  });
+});
+
+// GET /device
 // Returns all devices for authorized user
 router.get('/', auth.required, function(req, res, next){
+  const userId = req.user.id;
 
-  models.Device.findAll().then(function(deviceList) {
-    // Return the device
+  return models.Device.findAll({
+    include: {
+      model: models.User,
+      as: 'user',
+      where: { id: userId },
+      through: { attributes: [] }, // remove UserDevices data
+      attributes: [] // remove User data
+    },
+  }).then(function(deviceList) {
+
+    // Return the device list
     return res.json({devices: deviceList});
   }).catch(next);
 });
