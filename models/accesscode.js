@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     }).catch(err => {
       // Access code is probably taken, retry
       if (--retries < 0) throw err;
-      return createUniqueAccessCode(userId, retries);
+      return createUnique(userId, retries);
     });
   }
 
