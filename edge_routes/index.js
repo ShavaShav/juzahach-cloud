@@ -43,4 +43,16 @@ router.post('/register', function(req, res, next) {
   });
 });
 
+router.post('/location', auth.required, function(req, res, next) {
+
+  // Store location JSON and device's id from request
+  const location = req.body.location;
+  const deviceId = req.device.id;
+
+  // TODO: Store location with deviceId in database
+  
+  // Return OK status, indicated we stored location successfully
+  return res.status(200);
+});
+
 module.exports = router;
