@@ -18,8 +18,12 @@ describe('User', () => {
 
   // Clear DB before each test
   beforeEach(done => {
-    models.sequelize.sync({ force: true, match: /_test$/ })
-      .then(() => { done() });
+    Promise.all([
+      models.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true }),
+      models.sequelize.sync({ force: true, match: /_test$/ })
+    ]).then(res => {
+      done();
+    });
   });
 
   it('should return 401 with no token', done => {

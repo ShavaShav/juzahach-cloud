@@ -18,8 +18,12 @@ describe('Access Code', () => {
 
   beforeEach(done => {
     // Clear DB before each test
-    models.sequelize.sync({ force: true, match: /_test$/ })
-        .then(() => { done() });
+    Promise.all([
+      models.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true }),
+      models.sequelize.sync({ force: true, match: /_test$/ })
+    ]).then(res => {
+      done();
+    });
   });
 
   it('should produce access code for a valid user', done => {
