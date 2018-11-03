@@ -9,13 +9,21 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       longitute: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DOUBLE
       },
       latitute: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DOUBLE
       },
       timestamp: {
         type: Sequelize.DATE
+      },
+      deviceId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Devices',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

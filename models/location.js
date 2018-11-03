@@ -2,9 +2,9 @@
 
 module.exports = (sequalize, DataType) => {
 	const Location = sequelize.define('Location', {
-		latitude: DataType.FLOAT,
-		longitude: DataType.FLOAT
-		timestamps: DataType.DATE
+		latitude: DataType.DOUBLE,
+		longitude: DataType.DOUBLE,
+		timestamp: DataType.DATE
 	}, {
 
 		freezeTableName: true,
@@ -13,7 +13,8 @@ module.exports = (sequalize, DataType) => {
 	});
 
 	Location.associate = function(models){
-		Location.belongsTo(models.Device, {as: 'device', foreignKey: 'deviceID'});
+		// Each location belongs to one device
+		Location.belongsTo(models.Device, {as: 'device'});
 	};
 
 	return Location;
