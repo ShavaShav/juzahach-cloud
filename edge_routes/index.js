@@ -50,7 +50,22 @@ router.post('/location', auth.required, function(req, res, next) {
   const location = req.body.location;
   const deviceId = req.device.id;
 
+  //Require edit for bulk of data
+  return models.Locations.findOrCreate(
+    { longitute: location.longitute,
+      latitute: location.latitute,
+      deviceId: deviceId
+  }).spread((location, created) => {
+      console.log(created)
+  }).catch(err => {
+    console.log(err);
+  })
+  
+  
+
   // TODO: Store location with deviceId in database
+
+
   
   // Return OK status, indicated we stored location successfully
   return res.status(200);

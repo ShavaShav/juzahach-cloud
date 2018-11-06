@@ -3,9 +3,9 @@ const fs = require('fs');
 module.exports = {
   development: {
     username: process.env.DB_USERNAME || "root",
-    password: process.env.DB_PASSWORD || null,
+    password: process.env.DB_PASSWORD || 'password',
     database: process.env.DB_NAME || "cloud_dev",
-    host: process.env.DB_HOSTNAME || "127.0.0.1",
+    host: process.env.DB_HOSTNAME || "localhost",
     dialect: 'mysql',
     operatorsAliases: "Sequelize.Op",
   },
