@@ -51,15 +51,16 @@ router.post('/location', auth.required, function(req, res, next) {
   const deviceId = req.device.id;
 
   //Require edit for bulk of data
-  return models.Locations.findOrCreate(
-    { longitute: location.longitute,
-      latitute: location.latitute,
-      deviceId: deviceId
-  }).spread((location, created) => {
-      console.log(created)
-  }).catch(err => {
-    console.log(err);
-  })
+  return models.Locations.create({ 
+    timestamp: location.timestamp,
+    longitude: location.longitude,
+    latitude: location.latitude,
+    deviceId: deviceId
+}).then(location => {
+    return res.status(200); // location created
+}).catch(err => {
+    return res.status(500).json({error: err.message}); // failed to create
+})
   
   
 
@@ -68,7 +69,8 @@ router.post('/location', auth.required, function(req, res, next) {
 
   
   // Return OK status, indicated we stored location successfully
-  return res.status(200);
+return res.status(200);
 });
+
 
 module.exports = router;

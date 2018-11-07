@@ -8,10 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      longitute: {
+      longitude: {
         type: Sequelize.DOUBLE
       },
-      latitute: {
+      latitude: {
         type: Sequelize.DOUBLE
       },
       timestamp: {
