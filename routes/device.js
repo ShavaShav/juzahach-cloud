@@ -61,5 +61,36 @@ router.get('/', auth.required, function(req, res, next){
   }).catch(next);
 });
 
+// PUT /device/#1
+// Updates existing device, if belonging to use
+router.put('/:id', auth.required, function(req, res, next){
+  const userId = req.user.id;
+  const deviceUpdates = req.body.device;
+  console.log(deviceUpdates);
+  return models.Device.find({
+    where: { id: req.params.id },
+    include: {
+      model: models.User,
+      as: 'user',
+      where: { id: userId },
+      through: { attributes: [] }, // remove UserDevices data
+      attributes: [] // remove User data
+    }
+  }).then(function(device) {
+
+    // Check if device exists or doesn't belong to user
+    if (!device) {
+      return res.status(404).json({errors: { message: "Device not found for user."}});
+    }
+
+    console.log(device);
+
+    // Good, update the device
+    return device.update(deviceUpdates).then(device => {
+      // Return the updated device
+      return res.json({device: device});
+    });
+  }).catch(next);
+});
 
 module.exports = router;
