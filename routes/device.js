@@ -93,4 +93,31 @@ router.put('/:id', auth.required, function(req, res, next){
   }).catch(next);
 });
 
+// GET /device
+// Returns all locations for device for authorized user
+router.get('/:id/locations', auth.required, function(req, res, next){
+  const userId = req.user.id;
+  const deviceId = req.params.id;
+
+  return models.Location.findAll({
+    where: {deviceId: req.params.id },
+    include: {
+      model: models.Device,
+      as: 'device',
+      where: { id: deviceId },
+      attributes: [], // remove Device data
+      include: {
+        model: models.User,
+        as: 'user',
+        where: { id: userId },
+        through: { attributes: [] }, // remove UserDevices data
+        attributes: [] // remove User data
+      }
+    }
+  }).then(function(locationList) {
+    // Return the location list
+    return res.json({locations: locationList});
+  }).catch(next);
+});
+
 module.exports = router;
