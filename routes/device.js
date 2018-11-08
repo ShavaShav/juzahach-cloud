@@ -2,6 +2,8 @@ var router   = require('express').Router();
 var auth     = require('../auth');
 var models   = require('../models');
 
+const Op = models.Sequelize.Op;
+
 // POST /device/register
 // Create an access token for user, to be used by device in the edge-route
 router.post('/register', auth.required, function(req, res, next){
@@ -66,7 +68,7 @@ router.get('/', auth.required, function(req, res, next){
 router.put('/:id', auth.required, function(req, res, next){
   const userId = req.user.id;
   const deviceUpdates = req.body.device;
-  console.log(deviceUpdates);
+
   return models.Device.find({
     where: { id: req.params.id },
     include: {
@@ -83,8 +85,6 @@ router.put('/:id', auth.required, function(req, res, next){
       return res.status(404).json({errors: { message: "Device not found for user."}});
     }
 
-    console.log(device);
-
     // Good, update the device
     return device.update(deviceUpdates).then(device => {
       // Return the updated device
@@ -99,19 +99,32 @@ router.get('/:id/locations', auth.required, function(req, res, next){
   const userId = req.user.id;
   const deviceId = req.params.id;
 
+  var timeFilter = []; // add the before/after times in an AND select
+
+  if (req.query.start)
+    timeFilter.push({ timestamp: { [Op.gt]: new Date(req.query.start) } } ); // exclusive start
+
+  if (req.query.end) 
+    timeFilter.push({ timestamp: { [Op.lte]: new Date(req.query.end) } } ); // inclusive end
+
   return models.Location.findAll({
-    where: {deviceId: req.params.id },
+    limit: parseInt(req.query.limit) || undefined, // if limit arg unset or bad, then gets all
+    where: { 
+      [Op.and]: timeFilter
+    },
     include: {
       model: models.Device,
       as: 'device',
       where: { id: deviceId },
       attributes: [], // remove Device data
+      duplicating: false,
       include: {
         model: models.User,
         as: 'user',
         where: { id: userId },
         through: { attributes: [] }, // remove UserDevices data
-        attributes: [] // remove User data
+        attributes: [], // remove User data
+        duplicating: false
       }
     }
   }).then(function(locationList) {
