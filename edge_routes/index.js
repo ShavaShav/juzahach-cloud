@@ -39,8 +39,7 @@ router.post('/register', function(req, res, next) {
       });
     });
   }).catch(err => { // catch all
-    console.log(err);
-    res.status(500).json({errors: {message: err.message}});
+    return res.status(500).json({errors: {message: err.message}});
   });
 });
 
@@ -48,28 +47,19 @@ router.post('/location', auth.required, function(req, res, next) {
 
   // Store location JSON and device's id from request
   const location = req.body.location;
-  const deviceId = req.device.id;
+  const deviceId = req.user.id;
 
-  //Require edit for bulk of data
-  return models.Locations.create({ 
+  // Store location for device
+  return models.Location.create({ 
     timestamp: location.timestamp,
     longitude: location.longitude,
     latitude: location.latitude,
     deviceId: deviceId
-}).then(location => {
-    return res.status(200); // location created
-}).catch(err => {
+  }).then(location => {
+    return res.status(200).send('OK'); // location created
+  }).catch(err => {
     return res.status(500).json({error: err.message}); // failed to create
-})
-  
-  
-
-  // TODO: Store location with deviceId in database
-
-
-  
-  // Return OK status, indicated we stored location successfully
-return res.status(200);
+  });
 });
 
 
