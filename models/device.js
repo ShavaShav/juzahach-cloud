@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
   Device.associate = function(models) {
     // A device can be registered to multiple users (M:N)
     Device.belongsToMany(models.User, {through: 'UserDevices', as: 'user', foreignKey: 'deviceId'});
+
+    // A device will have many locations
+    Device.hasMany(models.Location, {as: 'device', foreignKey: 'deviceId'});
   };
 
   // Returns a fresh JSON webtoken for device

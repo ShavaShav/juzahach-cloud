@@ -1,6 +1,6 @@
 var router   = require('express').Router();
 var passport = require('passport');
-var auth     = require('./auth');
+var auth     = require('../auth');
 var models   = require('../models');
 
 // GET /user

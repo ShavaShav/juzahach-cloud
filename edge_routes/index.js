@@ -1,6 +1,7 @@
 var express = require('express');
 var router  = express.Router();
 var models  = require('../models');
+var auth    = require('../auth');
 
 router.post('/register', function(req, res, next) {
 
@@ -38,9 +39,28 @@ router.post('/register', function(req, res, next) {
       });
     });
   }).catch(err => { // catch all
-    console.log(err);
-    res.status(500).json({errors: {message: err.message}});
+    return res.status(500).json({errors: {message: err.message}});
   });
 });
+
+router.post('/location', auth.required, function(req, res, next) {
+
+  // Store location JSON and device's id from request
+  const location = req.body.location;
+  const deviceId = req.user.id;
+
+  // Store location for device
+  return models.Location.create({ 
+    timestamp: location.timestamp,
+    longitude: location.longitude,
+    latitude: location.latitude,
+    deviceId: deviceId
+  }).then(location => {
+    return res.status(200).send('OK'); // location created
+  }).catch(err => {
+    return res.status(500).json({error: err.message}); // failed to create
+  });
+});
+
 
 module.exports = router;
