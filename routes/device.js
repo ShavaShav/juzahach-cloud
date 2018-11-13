@@ -93,7 +93,7 @@ router.put('/:id', auth.required, function(req, res, next){
   }).catch(next);
 });
 
-// GET /device
+// GET /device/#/locations
 // Returns all locations for device for authorized user
 router.get('/:id/locations', auth.required, function(req, res, next){
   const userId = req.user.id;
@@ -108,6 +108,7 @@ router.get('/:id/locations', auth.required, function(req, res, next){
     timeFilter.push({ timestamp: { [Op.lte]: new Date(req.query.end) } } ); // inclusive end
 
   return models.Location.findAll({
+    order: [ [ 'timestamp', 'DESC' ]],
     limit: parseInt(req.query.limit) || undefined, // if limit arg unset or bad, then gets all
     where: { 
       [Op.and]: timeFilter

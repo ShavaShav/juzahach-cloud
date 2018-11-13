@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     Device.belongsToMany(models.User, {through: 'UserDevices', as: 'user', foreignKey: 'deviceId'});
 
     // A device will have many locations
-    Device.hasMany(models.Location, {as: 'device', foreignKey: 'deviceId'});
+    Device.hasMany(models.Location, {as: 'location', foreignKey: 'deviceId'});
   };
 
   // Returns a fresh JSON webtoken for device

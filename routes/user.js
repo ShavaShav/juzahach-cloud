@@ -3,6 +3,8 @@ var passport = require('passport');
 var auth     = require('../auth');
 var models   = require('../models');
 
+const Op = models.Sequelize.Op;
+
 // GET /user
 // Return current user
 router.get('/', auth.required, function(req, res, next) {
@@ -72,6 +74,45 @@ router.post('/register', function(req, res, next){
     return res.json({user: user.authJSON()});
   }).catch(next);
 
+});
+
+// GET /user/locations
+// Returns all locations for authorized user
+router.get('/locations', auth.required, function(req, res, next){
+  const userId = req.user.id;
+
+  var timeFilter = []; // add the before/after times in an AND select
+
+  if (req.query.start)
+    timeFilter.push({ timestamp: { [Op.gt]: new Date(req.query.start) } } ); // exclusive start
+
+  if (req.query.end) 
+    timeFilter.push({ timestamp: { [Op.lte]: new Date(req.query.end) } } ); // inclusive end
+
+  return models.Device.findAll({
+    include: [
+      {
+        model: models.Location,
+        as: 'location',
+        order: [ [ 'timestamp', 'DESC' ]],
+        limit: parseInt(req.query.limit) || undefined, // if limit arg unset or bad, then gets all
+        where: { 
+          [Op.and]: timeFilter
+        }
+      },
+      {
+        model: models.User,
+        as: 'user',
+        where: { id: userId },
+        through: { attributes: [] }, // remove UserDevices data
+        attributes: [], // remove User data
+        duplicating: false
+      }
+    ]
+  }).then(function(deviceLocationList) {
+    // Return the location list
+    return res.json({deviceLocations: deviceLocationList});
+  }).catch(next);
 });
 
 module.exports = router;
